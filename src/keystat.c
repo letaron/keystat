@@ -8,13 +8,13 @@ MODULE_DESCRIPTION("A keystroke stats counter");
 
 static int __init hello_init(void)
 {
-	    printk(KERN_INFO "Keystat counter enabled!\n");
-	        return 0;    // Non-zero return means that the module couldn't be loaded.
+    printk(KERN_INFO "Keystat counter enabled!\n");
+    return 0;    // Non-zero return means that the module couldn't be loaded.
 }
 
 static void __exit hello_cleanup(void)
 {
-	    printk(KERN_INFO "Keystat module unloaded.\n");
+    printk(KERN_INFO "Keystat module unloaded.\n");
 }
 
 module_init(hello_init);
