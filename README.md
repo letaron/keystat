@@ -1,5 +1,7 @@
 # KEYSTAT
 
+[![Travis CI](https://api.travis-ci.org/letaron/keystat.svg?branch=master)](https://travis-ci.org/letaron/keystat)
+
 ## BUILD
 
 ```sh
