@@ -31,3 +31,12 @@
 # Debug files
 *.dSYM/
 *.su
+
+# Build files
+src/.keystat.ko.cmd
+src/.keystat.mod.o.cmd
+src/.keystat.o.cmd
+src/.tmp_versions/
+src/Module.symvers
+src/keystat.mod.c
+src/modules.order
