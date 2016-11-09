@@ -10,4 +10,4 @@ before_script:
     - sudo apt-get install -y build-essential linux-headers-$(uname -r)
 
 script:
-    - bin/build 
+    - make
