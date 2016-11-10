@@ -1,15 +1,36 @@
-#include <linux/module.h>
 #include <linux/init.h>
+#include <linux/ip.h>
 #include <linux/kernel.h>
-#include <linux/fs.h>
+#include <linux/module.h>
+#include <linux/netfilter_ipv4.h>
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
+#include <linux/skbuff.h>
+#include <linux/udp.h>
 
-static int count = 0;
+static __u16 portnum = 0;
+
+/* This function to be called by hook. */
+static unsigned int hook_func(unsigned int hooknum, struct sk_buff *skb, const struct net_device *in, const struct net_device *out, int (*okfn) (struct sk_buff *))
+{
+	struct udphdr *udp_header;
+	struct iphdr *ip_header = (struct iphdr *)skb_network_header(skb);    
+
+	if (ip_header->protocol == IPPROTO_UDP) {
+		udp_header = (struct udphdr *)skb_transport_header(skb);
+		portnum = udp_header->dest;
+		printk(KERN_INFO "src = %d, dest = %d.\n", udp_header->source, udp_header->dest);
+
+		return NF_ACCEPT;
+		//return NF_DROP;
+	}
+
+	return NF_ACCEPT;
+}
 
 static int keystat_show(struct seq_file *m, void *v)
 {
-	seq_printf(m, "%d\n", ++count);
+	seq_printf(m, "Last UDP port knocked %d\n", portnum);
 	return 0;
 }
 
@@ -26,16 +47,26 @@ static const struct file_operations keystat_fops = {
 	.release    = single_release,
 };
 
+/* Netfilter hook */
+static struct nf_hook_ops nfho = {
+	.hook       = hook_func,
+	.hooknum    = 1, /* NF_IP_LOCAL_IN */
+	.pf         = PF_INET,
+	.priority   = NF_IP_PRI_FIRST,
+};
+
 static int __init keystat_init(void)
 {
-	printk(KERN_INFO "Loading keystat module, count = %d.\n", count);
+	printk(KERN_INFO "Loading keystat module, portnum = %d.\n", portnum);
 	proc_create("keystat", 0, NULL, &keystat_fops);
+	nf_register_hook(&nfho);
 	return 0;
 }
 
 static void __exit keystat_exit(void)
 {
 	remove_proc_entry("keystat", NULL);
+	nf_unregister_hook(&nfho);
 	printk(KERN_INFO "Unloading keystat module.\n");
 }
 
