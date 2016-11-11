@@ -2,6 +2,7 @@
 #include <linux/ip.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
+#include <linux/netfilter.h>
 #include <linux/netfilter_ipv4.h>
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
@@ -19,9 +20,19 @@ static unsigned int hook_func(unsigned int hooknum, struct sk_buff *skb, const s
 	struct iphdr *ip_header = (struct iphdr *)skb_network_header(skb);    
 
 	if (ip_header->protocol == IPPROTO_UDP) {
+		
 		udp_header = (struct udphdr *)skb_transport_header(skb);
 		portnum = ntohs(udp_header->dest);
+
+		if (portnum != PORT) {
+			return NF_ACCEPT;
+		}
+
 		printk(KERN_INFO "src = %d, dest = %d, converted dest %u.\n", udp_header->source, udp_header->dest, portnum);
+		printk(KERN_INFO "len = %u, data_len = %d\n", skb->len, skb->data_len);
+
+		print_hex_dump(KERN_ALERT, "mem: ", DUMP_PREFIX_ADDRESS, 16, 1, &skb->data, skb->len, 1);
+
 
 		//return NF_DROP;
 	}
