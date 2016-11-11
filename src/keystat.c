@@ -8,7 +8,9 @@
 #include <linux/skbuff.h>
 #include <linux/udp.h>
 
-static __u16 portnum = 0;
+#define PORT 3615
+
+static unsigned short int portnum = 0;
 
 /* This function to be called by hook. */
 static unsigned int hook_func(unsigned int hooknum, struct sk_buff *skb, const struct net_device *in, const struct net_device *out, int (*okfn) (struct sk_buff *))
@@ -18,10 +20,9 @@ static unsigned int hook_func(unsigned int hooknum, struct sk_buff *skb, const s
 
 	if (ip_header->protocol == IPPROTO_UDP) {
 		udp_header = (struct udphdr *)skb_transport_header(skb);
-		portnum = udp_header->dest;
-		printk(KERN_INFO "src = %d, dest = %d.\n", udp_header->source, udp_header->dest);
+		portnum = ntohs(udp_header->dest);
+		printk(KERN_INFO "src = %d, dest = %d, converted dest %u.\n", udp_header->source, udp_header->dest, portnum);
 
-		return NF_ACCEPT;
 		//return NF_DROP;
 	}
 
