@@ -2,7 +2,7 @@
 
 Port knocking Minitel Kernel Module
 
-[![Travis CI](https://api.travis-ci.org/letaron/keystat.svg?branch=master)](https://travis-ci.org/letaron/keystat)
+[![Travis CI](https://api.travis-ci.org/letaron/krnlmdl_minitel.svg?branch=master)](https://travis-ci.org/letaron/krnlmdl_minitel)
 
 ## TODO
 
@@ -17,8 +17,8 @@ make
 ## USAGE
 
 ```sh
-insmod keystat.ko
+insmod minitel.ko
 dmesg | tail -1
-rmmod hello.ko
+rmmod minitel.ko
 dmesg | tail -1
 ```
