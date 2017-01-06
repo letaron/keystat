@@ -1,42 +1,14 @@
 # Object files
 *.o
 *.ko
-*.obj
-*.elf
 
-# Precompiled Headers
-*.gch
-*.pch
-
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
-
-# Debug files
-*.dSYM/
-*.su
 
 # Build files
-src/.keystat.ko.cmd
-src/.keystat.mod.o.cmd
-src/.keystat.o.cmd
-src/.tmp_versions/
-src/Module.symvers
-src/keystat.mod.c
-src/modules.order
+.tmp_versions/
+Module.symvers
+modules.order
+
+src/.minitel.ko.cmd
+src/.minitel.mod.o.cmd
+src/.minitel.o.cmd
+src/minitel.mod.c
