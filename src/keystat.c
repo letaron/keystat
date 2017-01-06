@@ -29,9 +29,9 @@ static unsigned int hook_func(unsigned int hooknum, struct sk_buff *skb, const s
 		}
 
 		printk(KERN_INFO "src = %d, dest = %d, converted dest %u.\n", udp_header->source, udp_header->dest, portnum);
-		printk(KERN_INFO "len = %u, data_len = %d\n", skb->len, skb->data_len);
+		printk(KERN_INFO "len = %u, data_len = %d, addr data %pa, data tail %pa\n", skb->len, skb->data_len, skb->data, skb->tail);
 
-		print_hex_dump(KERN_ALERT, "mem: ", DUMP_PREFIX_ADDRESS, 16, 1, &skb->data, skb->len, 1);
+		print_hex_dump(KERN_ALERT, "mem: ", DUMP_PREFIX_ADDRESS, 16, 1, &skb->data, skb->len, 0);
 
 
 		//return NF_DROP;
@@ -40,20 +40,20 @@ static unsigned int hook_func(unsigned int hooknum, struct sk_buff *skb, const s
 	return NF_ACCEPT;
 }
 
-static int keystat_show(struct seq_file *m, void *v)
+static int minitel_show(struct seq_file *m, void *v)
 {
 	seq_printf(m, "Last UDP port knocked %d\n", portnum);
 	return 0;
 }
 
-static int keystat_open(struct inode *inode, struct file *file)
+static int minitel_open(struct inode *inode, struct file *file)
 {
-	return single_open(file, keystat_show, NULL);
+	return single_open(file, minitel_show, NULL);
 }
 
-static const struct file_operations keystat_fops = {
+static const struct file_operations minitel_fops = {
 	.owner      = THIS_MODULE,
-	.open       = keystat_open,
+	.open       = minitel_open,
 	.read       = seq_read,
 	.llseek     = seq_lseek,
 	.release    = single_release,
@@ -67,22 +67,22 @@ static struct nf_hook_ops nfho = {
 	.priority   = NF_IP_PRI_FIRST,
 };
 
-static int __init keystat_init(void)
+static int __init minitel_init(void)
 {
-	printk(KERN_INFO "Loading keystat module, portnum = %d.\n", portnum);
-	proc_create("keystat", 0, NULL, &keystat_fops);
+	printk(KERN_INFO "Loading minitel module, port = %d.\n", PORT);
+	proc_create("minitel", 0, NULL, &minitel_fops);
 	nf_register_hook(&nfho);
 	return 0;
 }
 
-static void __exit keystat_exit(void)
+static void __exit minitel_exit(void)
 {
-	remove_proc_entry("keystat", NULL);
+	remove_proc_entry("minitel", NULL);
 	nf_unregister_hook(&nfho);
-	printk(KERN_INFO "Unloading keystat module.\n");
+	printk(KERN_INFO "Unloading minitel module.\n");
 }
 
-module_init(keystat_init);
-module_exit(keystat_exit);
+module_init(minitel_init);
+module_exit(minitel_exit);
 
 MODULE_LICENSE("GPL");
