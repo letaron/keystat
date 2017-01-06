@@ -1,6 +1,12 @@
-# KEYSTAT
+# MINITEL
+
+Port knocking Minitel Kernel Module
 
 [![Travis CI](https://api.travis-ci.org/letaron/keystat.svg?branch=master)](https://travis-ci.org/letaron/keystat)
+
+## TODO
+
+  - Display payload of the UDP packet.
 
 ## BUILD
 
